@@ -1,0 +1,60 @@
+{
+  "name": "buyer-app",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "prepare": "husky install",
+    "lint": "npm run tsc && npm run lint:script && npm run lint:style",
+    "lint-fix": "npm run lint-fix:script && npm run lint-fix:style",
+    "lint-fix:script": "npm run lint:script -- --fix",
+    "lint-fix:style": "npm run lint:style -- --fix",
+    "lint:script": "eslint . --ext .js,.jsx,.ts,.tsx,.vue",
+    "lint:style": "stylelint 'src/**/*.scss'",
+    "tsc": "tsc --noEmit"
+  },
+  "lint-staged": {
+    "*.scss": "stylelint --fix",
+    "*": "prettier -c --write",
+    "*.{.js,.jsx,.ts,.ts,.vue}": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.0.0",
+    "@commitlint/config-conventional": "^18.0.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+    "@nuxt/devtools": "latest",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jest": "^27.4.3",
+    "eslint-plugin-markdown": "^3.0.1",
+    "eslint-plugin-no-explicit-type-exports": "^0.12.1",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-vue": "^9.17.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.2",
+    "nuxt": "^3.7.4",
+    "prettier": "^3.0.3",
+    "sass": "^1.69.4",
+    "sass-loader": "^13.3.2",
+    "sass-to-string": "^1.6.3",
+    "stylelint": "^15.11.0",
+    "stylelint-config-prettier": "^9.0.5",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^34.0.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.7.0",
+    "stylelint-order": "^6.0.3",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@stylospectrum/ui": "^0.0.3",
+    "lit": "^3.0.0"
+  }
+}
