@@ -1,9 +1,10 @@
 {
   "name": "buyer-app",
+  "type": "module",
   "version": "0.0.1",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev -p $(grep PORT .env | cut -d '=' -f2)",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -22,39 +23,34 @@
     "*.{.js,.jsx,.ts,.ts,.vue}": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.0.0",
-    "@commitlint/config-conventional": "^18.0.0",
+    "@commitlint/cli": "^18.2.0",
+    "@commitlint/config-conventional": "^18.1.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
-    "@nuxt/devtools": "latest",
+    "@nuxt/devtools": "^1.0.3",
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
     "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-html": "^7.1.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-jest": "^27.4.3",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jest": "^27.6.0",
     "eslint-plugin-markdown": "^3.0.1",
     "eslint-plugin-no-explicit-type-exports": "^0.12.1",
     "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-vue": "^9.17.0",
+    "eslint-plugin-vue": "^9.18.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
-    "nuxt": "^3.7.4",
+    "nuxt": "^3.8.0",
     "prettier": "^3.0.3",
-    "sass": "^1.69.4",
-    "sass-loader": "^13.3.2",
-    "sass-to-string": "^1.6.3",
-    "stylelint": "^15.11.0",
-    "stylelint-config-prettier": "^9.0.5",
+    "sass": "^1.69.5",
+    "stylelint": "^15.10.3",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^34.0.0",
-    "stylelint-declaration-block-no-ignored-properties": "^2.7.0",
-    "stylelint-order": "^6.0.3",
-    "vue": "^3.3.4",
+    "stylelint-prettier": "^4.0.0",
+    "vue": "^3.3.7",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "@stylospectrum/ui": "^0.0.3",
-    "lit": "^3.0.0"
+    "@stylospectrum/ui": "^0.0.8"
   }
 }
