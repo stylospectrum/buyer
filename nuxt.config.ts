@@ -5,4 +5,13 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => tag.includes('stylospectrum'),
     },
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "~/assets/scss/_var.scss" as *;',
+        },
+      },
+    },
+  },
 });
