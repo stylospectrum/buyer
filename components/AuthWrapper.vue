@@ -11,12 +11,13 @@
       <div class="box">
         <div class="box-form">
           <div class="box-form-title">{{ title }}</div>
+          <slot name="description"></slot>
           <slot name="form"></slot>
         </div>
 
         <stylospectrum-button
           @click="$emit('buttonSubmit')"
-          @keydown="(e) => $emit('buttonKeyDown', e)"
+          @keydown="(e: KeyboardEvent) => $emit('buttonKeyDown', e)"
           class="box-button"
         >
           {{ buttonText }}
@@ -49,7 +50,7 @@ const {
   title = 'Sign in',
   buttonText = 'Continue',
   img = {
-    src: 'img/login.png',
+    src: '/img/login.png',
     width: '400px',
     height: '398.55px',
   },

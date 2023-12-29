@@ -1,11 +1,11 @@
-import { SignInRequest, SignInResponse } from '~/interface';
+import { UpdatePasswordRequest, UpdatePasswordResponse } from '~/interface';
 import { axios } from '~/lib/axios';
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<SignInRequest>(event);
+  const body = await readBody<UpdatePasswordRequest>(event);
 
   try {
-    const response = await axios.post<SignInResponse>('/authentication/sign-in', {
+    const response = await axios.post<UpdatePasswordResponse>('/users/update-password', {
       ...body,
       role: 'Seller',
     });
