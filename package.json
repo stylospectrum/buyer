@@ -14,11 +14,11 @@
     "lint-fix:script": "npm run lint:script -- --fix",
     "lint-fix:style": "npm run lint:style -- --fix",
     "lint:script": "eslint . --ext .js,.jsx,.ts,.tsx,.vue",
-    "lint:style": "stylelint 'src/**/*.scss'",
+    "lint:style": "stylelint '*.vue'",
     "tsc": "tsc --noEmit"
   },
   "lint-staged": {
-    "*.scss": "stylelint --fix",
+    "*.vue": "stylelint --fix",
     "*": "prettier -c --write",
     "*.{.js,.jsx,.ts,.ts,.vue}": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue"
   },
@@ -42,12 +42,15 @@
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
     "nuxt": "^3.8.2",
+    "postcss-html": "^1.5.0",
     "prettier": "^3.0.3",
     "sass": "^1.69.5",
-    "stylelint": "^15.10.3",
+    "stylelint": "^16.1.0",
     "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-config-standard": "^34.0.0",
-    "stylelint-prettier": "^4.0.0",
+    "stylelint-config-recommended-scss": "^14.0.0",
+    "stylelint-config-recommended-vue": "^1.5.0",
+    "stylelint-config-standard": "^36.0.0",
+    "stylelint-prettier": "^5.0.0",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5"
   },
