@@ -55,7 +55,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "@stylospectrum/ui": "^0.0.12",
+    "@stylospectrum/ui": "^0.0.14",
     "axios": "^1.6.2",
     "pinia": "^2.1.7"
   }
