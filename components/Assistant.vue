@@ -1,9 +1,7 @@
 <template>
-  <div class="wrapper" @click="handleWrapperClick" :style="style">
+  <div class="wrapper" @click="$emit('click')">
     <stylospectrum-button
       type="Secondary"
-      :focused="chatBoxVisible && clicked"
-      :disableInternalFocus="chatBoxVisible && clicked"
       @mouseover="handleMouseOver"
       @mouseleave="handleMouseLeave"
       style="min-width: 3rem; height: 2.5rem"
@@ -28,53 +26,21 @@
 <script setup lang="ts">
 import '@stylospectrum/ui/dist/button';
 
-import type { CSSProperties } from 'vue';
-
-interface AssistantProps {
-  chatBoxVisible: boolean;
-}
-
-const emit = defineEmits(['click']);
-const props = defineProps<AssistantProps>();
-const chatBoxVisible = toRef(props, 'chatBoxVisible');
 const hover = ref(false);
-const style = ref<CSSProperties>();
-const clicked = ref(false);
-
-watchEffect(() => {
-  if (chatBoxVisible.value && clicked.value) {
-    style.value = {
-      top: '7.5rem',
-      right: '31rem',
-    };
-  } else {
-    clicked.value = false;
-    style.value = {
-      top: '4rem',
-      right: '3rem',
-    };
-  }
-});
 
 const handleMouseOver = () => {
-  if (chatBoxVisible.value) {
-    return;
-  }
   hover.value = true;
 };
 
 const handleMouseLeave = () => {
   hover.value = false;
 };
-
-const handleWrapperClick = () => {
-  clicked.value = true;
-  emit('click');
-};
 </script>
 
 <style scoped lang="scss">
 .wrapper {
   position: absolute;
+  top: 4rem;
+  right: 3rem;
 }
 </style>

@@ -4,7 +4,7 @@
       <template v-slot:description>
         <div className="description">
           To continue, complete this verification step. We have sent OTP to the email
-          {{ credentialStore.email }}. Please enter it below.
+          {{ userStore.email }}. Please enter it below.
         </div>
       </template>
 
@@ -41,36 +41,34 @@ import { ref } from 'vue';
 import '@stylospectrum/ui/dist/form';
 import '@stylospectrum/ui/dist/form/form-item';
 import '@stylospectrum/ui/dist/input';
-import '@stylospectrum/ui/dist/toast';
 import '@stylospectrum/ui/dist/message-strip';
+import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
 import AuthWrapper from '../components/AuthWrapper.vue';
-import type { SendOtpToEmailResponse, VerifyOtpResponse } from '~/interface';
-import { useCredentialStore } from '~/stores';
+import { AuthApi } from '~/api';
+import { useUserStore } from '~/stores';
 
 const formRef = ref<IForm>();
 const toastRef = ref<IToast>();
 const renderComponent = ref(true);
 const infoVisible = ref(false);
-const credentialStore = useCredentialStore();
-
+const userStore = useUserStore();
 const router = useRouter();
+const axios = useAxios();
+const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
   const values = await formRef.value!.validateFields();
   if (values) {
     try {
-      const response = await $fetch<VerifyOtpResponse>('/api/verify-otp', {
-        method: 'post',
-        body: {
-          email: credentialStore.email,
-          code: values.otp,
-        },
+      const response = await authApi.verifyOTP({
+        email: userStore.email,
+        otp: values.otp,
       });
 
-      if (response.valid) {
+      if (response.data.valid) {
         router.push('/login/new-password');
       } else {
         toastRef.value?.show('Invalid OTP. Please check your code and try again');
@@ -82,13 +80,10 @@ async function handleButtonSubmit() {
 }
 
 async function handleResend() {
-  const response = await $fetch<SendOtpToEmailResponse>('/api/send-otp-to-email', {
-    method: 'post',
-    body: {
-      email: credentialStore.email,
-    },
+  const response = await authApi.sendOTPToEmail({
+    email: userStore.email,
   });
-  infoVisible.value = response.sent;
+  infoVisible.value = response.data.sent;
 }
 
 const forceRerender = async () => {

@@ -1,20 +1,20 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="visible">
     <div class="header">
       <div class="header-inner">
         <div class="avatar">
           <stylospectrum-avatar initials="FJ" style="width: 2rem; height: 2rem">
           </stylospectrum-avatar>
         </div>
-        <span class="text">{{ name }}</span>
+        <span class="text">{{ metadata.name }}</span>
       </div>
-      <stylospectrum-button type="Tertiary" icon="decline" @click="$emit('close')">
+      <stylospectrum-button type="Tertiary" icon="decline" @click="handleClose">
       </stylospectrum-button>
     </div>
 
     <div class="content"></div>
     <div class="footer">
-      <ChatBoxInput @enter="(value) => console.log(value)" />
+      <ChatBoxInput @enter="(value) => handleEnter(value)" />
     </div>
   </div>
 </template>
@@ -24,14 +24,62 @@ import '@stylospectrum/ui/dist/avatar';
 import '@stylospectrum/ui/dist/button';
 import '@stylospectrum/ui/dist/icon/data/decline';
 
-import ChatBoxInput from './ChatBoxInput.vue';
+import { io, type Socket } from 'socket.io-client';
 
-interface ChatBoxProps {
-  name: string;
+import ChatBoxInput from './ChatBoxInput.vue';
+import storage from '~/utils/storage';
+
+interface Metadata {
+  name?: string;
+  conversationId?: string;
 }
 
-const props = defineProps<ChatBoxProps>();
-const { name } = props;
+const visible = ref(false);
+const metadata = ref<Metadata>({});
+
+const config = useRuntimeConfig();
+const socket = ref<Socket>();
+const userStore = useUserStore();
+
+const handleEnter = (message: string) => {
+  socket.value?.emit('chat', {
+    message,
+    conversationId: metadata.value.conversationId,
+    buyerId: userStore.id,
+    role: 'Buyer',
+  });
+};
+
+const handleOpen = (args: Metadata) => {
+  if (visible.value) {
+    return;
+  }
+  const url = config.public.apiUrl.replace('http://', '');
+  const tokens = storage.getToken();
+
+  visible.value = true;
+  metadata.value = args;
+
+  socket.value = io(`ws://${url}`, {
+    path: '/chat/socket.io',
+    extraHeaders: { Authorization: `Bearer ${tokens.accessToken}` },
+  });
+  socket.value.connect();
+
+  socket.value?.on('chat', (arg) => {
+    console.log(arg);
+  });
+};
+
+const handleClose = () => {
+  visible.value = false;
+  socket.value?.disconnect();
+};
+
+defineExpose({
+  open: handleOpen,
+  close: handleClose,
+});
 </script>
 
 <style scoped lang="scss">

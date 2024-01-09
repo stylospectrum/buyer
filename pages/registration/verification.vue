@@ -9,7 +9,7 @@
     >
       <template v-slot:description>
         <div className="description">
-          To verify your email, we've sent a One Time Password (OTP) to {{ credentialStore.email }}
+          To verify your email, we've sent a One Time Password (OTP) to {{ userStore.email }}
         </div>
       </template>
 
@@ -46,21 +46,22 @@ import { ref } from 'vue';
 import '@stylospectrum/ui/dist/form';
 import '@stylospectrum/ui/dist/form/form-item';
 import '@stylospectrum/ui/dist/input';
-import '@stylospectrum/ui/dist/toast';
 import '@stylospectrum/ui/dist/message-strip';
+import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
 import AuthWrapper from '../components/AuthWrapper.vue';
-import type { SendOtpToEmailResponse, SignInResponse, VerifyOtpResponse } from '~/interface';
-import { useCredentialStore } from '~/stores';
+import { AuthApi } from '~/api';
+import { useUserStore } from '~/stores';
 
 const formRef = ref<IForm>();
 const toastRef = ref<IToast>();
 const renderComponent = ref(true);
 const infoVisible = ref(false);
-
-const credentialStore = useCredentialStore();
+const axios = useAxios();
+const authApi = new AuthApi(axios);
+const userStore = useUserStore();
 const authStore = useAuthStore();
 const router = useRouter();
 
@@ -68,29 +69,15 @@ async function handleButtonSubmit() {
   const values = await formRef.value!.validateFields();
   if (values) {
     try {
-      let response: any = await $fetch<VerifyOtpResponse>('/api/verify-otp', {
-        method: 'post',
-        body: {
-          email: credentialStore.email,
-          code: values.otp,
-        },
+      const response = await authApi.signUp({
+        name: userStore.name,
+        email: userStore.email,
+        password: userStore.password,
+        otp: values.otp,
       });
 
-      if (response.valid) {
-        response = await $fetch<SignInResponse>('/api/login', {
-          method: 'post',
-          body: {
-            password: credentialStore.password,
-            email: credentialStore.email,
-          },
-        });
-
-        if (response.message) {
-          toastRef.value?.show(response.message);
-          return;
-        }
-
-        authStore.setIsAuth(true);
+      if (response.data.emailValid) {
+        authStore.setAccessToken(response.data.accessToken);
         router.push('/');
       } else {
         toastRef.value?.show('Invalid OTP. Please check your code and try again');
@@ -102,13 +89,11 @@ async function handleButtonSubmit() {
 }
 
 async function handleResend() {
-  const response = await $fetch<SendOtpToEmailResponse>('/api/send-otp-to-email', {
-    method: 'post',
-    body: {
-      email: credentialStore.email,
-    },
+  const response = await authApi.sendOTPToEmail({
+    email: userStore.email,
+    isSignUp: true,
   });
-  infoVisible.value = response.sent;
+  infoVisible.value = response.data.sent;
 }
 
 const forceRerender = async () => {

@@ -37,47 +37,35 @@ import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
-import AuthWrapper from '../components/AuthWrapper.vue';
-import type { SignInResponse, UpdatePasswordResponse } from '~/interface';
-import { useCredentialStore } from '~/stores';
+import { AuthApi } from '~/api';
+import AuthWrapper from '~/components/AuthWrapper.vue';
 
 const formRef = ref<IForm>();
 const toastRef = ref<IToast>();
 const renderComponent = ref(true);
-
 const router = useRouter();
 const authStore = useAuthStore();
-const credentialStore = useCredentialStore();
+const userStore = useUserStore();
+const axios = useAxios();
+const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
   const values = await formRef.value!.validateFields();
 
   if (values) {
     try {
-      let response: any = await $fetch<UpdatePasswordResponse>('/api/update-password', {
-        method: 'post',
-        body: {
-          password: values.password,
-          email: credentialStore.email,
-        },
+      const response = await authApi.updatePassword({
+        password: values.password,
+        email: userStore.email,
       });
 
-      if (response.ok) {
-        response = await $fetch<SignInResponse>('/api/login', {
-          method: 'post',
-          body: {
-            password: values.password,
-            email: credentialStore.email,
-          },
-        });
-
-        if (response.message) {
-          toastRef.value?.show(response.message);
-          return;
-        }
-        authStore.setIsAuth(true);
-        router.push('/');
+      if (response.statusCode !== 200) {
+        toastRef.value?.show(response.message);
+        return;
       }
+
+      authStore.setAccessToken(response.data.accessToken);
+      router.push('/');
     } catch (err) {
       console.log(err);
     }

@@ -69,7 +69,8 @@ import '@stylospectrum/ui/dist/toast';
 import { type IForm, type IInput, type ILink, type IToast } from '@stylospectrum/ui/dist/types';
 import { isTabNext } from '@stylospectrum/ui/dist/utils/Keys';
 
-import AuthWrapper from '../components/AuthWrapper.vue';
+import { AuthApi } from '~/api';
+import AuthWrapper from '~/components/AuthWrapper.vue';
 import storage from '~/utils/storage';
 
 const formRef = ref<IForm>();
@@ -78,31 +79,32 @@ const forgotPassRef = ref<ILink>();
 const createAnAccRef = ref<ILink>();
 const toastRef = ref<IToast>();
 const renderComponent = ref(true);
-
 const authStore = useAuthStore();
 const router = useRouter();
+const axios = useAxios();
+const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
   const values = await formRef.value!.validateFields();
   if (values) {
     try {
-      const response = await $fetch('/api/login', {
-        method: 'post',
-        body: {
-          email: values.email,
-          password: values.password,
-        },
+      const response = await authApi.signIn({
+        email: values.email,
+        password: values.password,
       });
 
-      if (response.message) {
+      if (response.statusCode !== 200) {
         toastRef.value?.show(response.message);
         return;
       }
 
       if (values['keep-me-signed-in']) {
-        storage.setToken(response);
+        storage.setToken({
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken,
+        });
       } else {
-        authStore.setIsAuth(true);
+        authStore.setAccessToken(response.data.accessToken);
       }
 
       router.push('/');
@@ -168,3 +170,4 @@ const handleButtonKeyDown = (e: KeyboardEvent) => {
   }
 }
 </style>
+~/api/auth

@@ -39,34 +39,33 @@ import '@stylospectrum/ui/dist/toast';
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
 import AuthWrapper from '../components/AuthWrapper.vue';
-import type { SendOtpToEmailResponse } from '~/interface';
-import { useCredentialStore } from '~/stores';
+import { AuthApi } from '~/api';
+import { User } from '~/model';
+import { useUserStore } from '~/stores';
 
 const formRef = ref<IForm>();
 const toastRef = ref<IToast>();
 const renderComponent = ref(true);
-
 const router = useRouter();
-const credentialStore = useCredentialStore();
+const userStore = useUserStore();
+const axios = useAxios();
+const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
   const values = await formRef.value!.validateFields();
   if (values) {
     try {
-      const response = await $fetch<SendOtpToEmailResponse>('/api/send-otp-to-email', {
-        method: 'post',
-        body: {
-          email: values.email,
-        },
+      const response = await authApi.sendOTPToEmail({
+        email: values.email,
       });
 
-      if (response.message) {
+      if (response.statusCode !== 200) {
         toastRef.value?.show(response.message);
         return;
       }
 
-      if (response.sent) {
-        credentialStore.setCredential(values.email);
+      if (response.data.sent) {
+        userStore.setUser(new User({ email: values.email }));
         router.push('/login/verification');
       }
     } catch (err) {

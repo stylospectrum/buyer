@@ -65,44 +65,38 @@ import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
-import AuthWrapper from '../components/AuthWrapper.vue';
-import type { SendOtpToEmailResponse, SignUpResponse } from '~/interface';
+import { AuthApi } from '~/api';
+import AuthWrapper from '~/components/AuthWrapper.vue';
+import { useUserStore } from '~/stores';
 
 const formRef = ref<IForm>();
 const toastRef = ref<IToast>();
 const renderComponent = ref(true);
-const credentialStore = useCredentialStore();
-
+const userStore = useUserStore();
+const axios = useAxios();
+const authApi = new AuthApi(axios);
 const router = useRouter();
 
 async function handleButtonSubmit() {
   const values = await formRef.value!.validateFields();
   if (values) {
     try {
-      let response: any = await $fetch<SignUpResponse>('/api/registration', {
-        method: 'post',
-        body: {
-          name: values.name,
-          email: values.email,
-          password: values.password,
-        },
+      const response = await authApi.sendOTPToEmail({
+        email: values.email,
+        isSignUp: true,
       });
 
-      if (response.message) {
+      if (response.statusCode !== 200) {
         toastRef.value?.show(response.message);
         return;
       }
 
-      response = await $fetch<SendOtpToEmailResponse>('/api/send-otp-to-email', {
-        method: 'post',
-        body: {
+      if (response.data.sent) {
+        userStore.setUser({
+          name: values.name,
           email: values.email,
-          isRegistration: true,
-        },
-      });
-
-      if (response.sent) {
-        credentialStore.setCredential(values.email, values.password);
+          password: values.password,
+        });
         router.push('/registration/verification');
       }
     } catch (err) {

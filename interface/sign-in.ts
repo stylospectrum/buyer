@@ -1,26 +1,27 @@
-import type { CommonError } from './error';
+import type { User } from '~/model';
 
 export interface SignInRequest {
   email: string;
   password: string;
 }
 
-export interface SignInResponse extends CommonError {
+export interface SignInResponse {
   accessToken: string;
   refreshToken: string;
 }
 
 export interface SendOtpToEmailRequest {
   email: string;
+  isSignUp?: boolean;
 }
 
-export interface SendOtpToEmailResponse extends CommonError {
+export interface SendOtpToEmailResponse {
   sent: boolean;
 }
 
 export interface VerifyOtpRequest {
   email: string;
-  code: string;
+  otp: string;
 }
 
 export interface VerifyOtpResponse {
@@ -29,6 +30,6 @@ export interface VerifyOtpResponse {
 
 export interface UpdatePasswordRequest extends SignInRequest {}
 
-export interface UpdatePasswordResponse {
-  ok: boolean;
+export interface UpdatePasswordResponse extends SignInResponse {
+  user: User;
 }

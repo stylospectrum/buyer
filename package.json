@@ -57,6 +57,7 @@
   "dependencies": {
     "@stylospectrum/ui": "^0.0.14",
     "axios": "^1.6.2",
-    "pinia": "^2.1.7"
+    "pinia": "^2.1.7",
+    "socket.io-client": "^4.7.3"
   }
 }
