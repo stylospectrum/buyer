@@ -12,7 +12,27 @@
       </stylospectrum-button>
     </div>
 
-    <div class="content"></div>
+    <div class="content">
+      <div class="message-container" ref="msgContNode">
+        <div
+          v-for="(message, idx) in messages"
+          :key="idx"
+          :style="{
+            'margin-top': messages?.[idx - 1]?.senderId === userStore.id ? '0.5rem' : '1rem',
+          }"
+          :class="{
+            'message-left': message.senderId !== userStore.id,
+            'message-right': message.senderId === userStore.id,
+          }"
+        >
+          <div class="message-box">
+            <div class="message-content">
+              {{ message.content }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="footer">
       <ChatBoxInput @enter="(value) => handleEnter(value)" />
     </div>
@@ -27,6 +47,8 @@ import '@stylospectrum/ui/dist/icon/data/decline';
 import { io, type Socket } from 'socket.io-client';
 
 import ChatBoxInput from './ChatBoxInput.vue';
+import { ChatApi } from '~/api';
+import { Message } from '~/model';
 import storage from '~/utils/storage';
 
 interface Metadata {
@@ -34,12 +56,29 @@ interface Metadata {
   conversationId?: string;
 }
 
+const msgContNode = ref<HTMLElement>();
 const visible = ref(false);
 const metadata = ref<Metadata>({});
-
+const messages = ref<Message[]>([]);
+const axios = useAxios();
+const chatApi = new ChatApi(axios);
 const config = useRuntimeConfig();
 const socket = ref<Socket>();
 const userStore = useUserStore();
+
+watch(visible, async () => {
+  if (visible.value) {
+    messages.value = [];
+    const res = await chatApi.getMessages({
+      conversationId: metadata.value.conversationId!,
+      limit: 100,
+    });
+    messages.value = res;
+    nextTick(() => {
+      msgContNode.value!.scrollTop = msgContNode.value!.scrollHeight;
+    });
+  }
+});
 
 const handleEnter = (message: string) => {
   socket.value?.emit('chat', {
@@ -66,8 +105,17 @@ const handleOpen = (args: Metadata) => {
   });
   socket.value.connect();
 
-  socket.value?.on('chat', (arg) => {
-    console.log(arg);
+  socket.value?.on('chat', (message) => {
+    messages.value.push(
+      new Message({
+        content: message.content,
+        senderId: message.senderId,
+        id: message.id,
+      }),
+    );
+    nextTick(() => {
+      msgContNode.value!.scrollTop = msgContNode.value!.scrollHeight;
+    });
   });
 };
 
@@ -151,6 +199,62 @@ defineExpose({
     padding: 1rem;
     border-top: 1px solid #2e3742;
     background: #1d232a;
+  }
+
+  .message-container {
+    display: flex;
+    padding: 1rem;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 0 0;
+    align-self: stretch;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    @include scrollbar;
+  }
+
+  .message-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    align-self: stretch;
+
+    .message-box {
+      background: #083c67;
+    }
+  }
+
+  .message-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+
+    .message-box {
+      background: #12171c;
+    }
+  }
+
+  .message-box {
+    display: flex;
+    max-width: 18rem;
+    padding: 0.625rem;
+    flex-wrap: wrap;
+    border-radius: 0.5rem;
+    align-items: flex-start;
+    align-content: flex-start;
+  }
+
+  .message-content {
+    flex: 1 0 0;
+    color: #fff;
+    font-family: $font-family;
+    font-size: 0.875rem;
+    font-weight: 400;
+    white-space: pre-wrap;
   }
 }
 </style>

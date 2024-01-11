@@ -1,4 +1,4 @@
 export * from './sign-in';
 export * from './sign-up';
 export * from './common';
-export * from './user';
+export * from './chat';

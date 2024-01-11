@@ -2,7 +2,10 @@
   <ClientOnly>
     <ShellBar />
     <ChatBox ref="chatBoxRef" />
-    <Assistant @click="() => chatBoxRef.open({ name: 'Luna', conversationId: 'luna' })" />
+    <Assistant
+      v-if="isAuth"
+      @click="() => chatBoxRef.open({ name: 'Luna', conversationId: 'luna' })"
+    />
   </ClientOnly>
 </template>
 
@@ -11,6 +14,9 @@ import { UserApi } from '~/api';
 import Assistant from '~/components/Assistant.vue';
 import ChatBox from '~/components/ChatBox.vue';
 import ShellBar from '~/components/ShellBar.vue';
+
+const authStore = useAuthStore();
+const isAuth = process.client && (storage.getToken() || authStore.accessToken);
 
 const chatBoxRef = ref();
 const userStore = useUserStore();

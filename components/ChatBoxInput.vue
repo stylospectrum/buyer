@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <textarea :style="style" @input="handleInput" @keydown="handleKeyDown"></textarea>
+    <textarea ref="node" :style="style" @input="handleInput" @keydown="handleKeyDown"></textarea>
   </div>
 </template>
 
@@ -10,6 +10,7 @@ import { isEnter } from '@stylospectrum/ui/dist/utils/Keys';
 
 import calculateTextareaHeight from '~/utils/calculateTextareaHeight';
 
+const node = ref<HTMLTextAreaElement>();
 const style = ref<CSSProperties>();
 const emit = defineEmits(['enter']);
 
@@ -22,6 +23,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
   if (isEnter(e)) {
     e.preventDefault();
     emit('enter', (e.target as HTMLTextAreaElement).value);
+    node.value!.value = '';
   }
 };
 </script>

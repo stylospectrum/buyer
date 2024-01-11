@@ -86,10 +86,10 @@ const popoverRef = ref<IPopover>();
 const router = useRouter();
 const authStore = useAuthStore();
 
-const isAuth = process.client && (storage.getToken() || authStore.isAuth);
+const isAuth = process.client && (storage.getToken() || authStore.accessToken);
 
 const handleLogout = () => {
-  authStore.setIsAuth(false);
+  authStore.setAccessToken('');
   storage.clearToken();
   window.location.assign(window.location.origin as unknown as string);
 };
