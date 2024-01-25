@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="wrapperDomRef"
     class="wrap"
     :class="{ 'wrap-focused': focused }"
     tabindex="0"
@@ -13,6 +14,7 @@
 
 <script setup lang="ts">
 const focused = ref<boolean>();
+const wrapperDomRef = ref<HTMLElement>();
 
 const handleFocus = () => {
   focused.value = true;
@@ -21,6 +23,10 @@ const handleFocus = () => {
 const handleBlur = () => {
   focused.value = false;
 };
+
+defineExpose({
+  getWrapperDomRef: () => wrapperDomRef.value,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -29,7 +35,6 @@ const handleBlur = () => {
   min-width: 2rem;
   font-size: 1rem;
   text-align: center;
-  position: relative;
   border-radius: 0.5rem;
   margin: 0 0 0 0.5rem;
   cursor: pointer;

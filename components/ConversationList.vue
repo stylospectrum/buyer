@@ -1,5 +1,9 @@
 <template>
-  <stylospectrum-popover header-text="Chat" ref="popoverRef">
+  <div ref="opener" @click="() => popoverRef?.showAt(opener!)">
+    <slot name="opener"></slot>
+  </div>
+
+  <stylospectrum-popover hide-footer header-text="Chat" ref="popoverRef">
     <stylospectrum-input
       style="width: 100%"
       placeholder="Search"
@@ -8,10 +12,6 @@
       show-search
     >
     </stylospectrum-input>
-
-    <div slot="opener" @click="() => popoverRef?.show()">
-      <slot name="opener"></slot>
-    </div>
 
     <div class="list">
       <ConversationItem
@@ -37,6 +37,7 @@ import ConversationItem from './ConversationItem.vue';
 
 const emit = defineEmits(['click']);
 const popoverRef = ref<IPopover>();
+const opener = ref<HTMLElement>();
 
 const handleClick = () => {
   emit('click');

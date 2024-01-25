@@ -22,26 +22,28 @@
           {{ lastMessage }}
         </div>
 
+        <div
+          ref="opener"
+          v-if="hover || popoverRef?.opened"
+          style="width: 1rem; height: 1rem"
+          @click="
+            (e: MouseEvent) => {
+              e.stopPropagation();
+              popoverRef?.showAt(opener!);
+            }
+          "
+        >
+          <stylospectrum-icon class="icon icon-arrow" name="navigation-down-arrow">
+          </stylospectrum-icon>
+        </div>
+
         <stylospectrum-popover
           ref="popoverRef"
+          hide-footer
           horizontal-align="Right"
           offset-x="16"
           v-if="hover || popoverRef?.opened"
         >
-          <div
-            slot="opener"
-            style="width: 1rem; height: 1rem"
-            @click="
-              (e: MouseEvent) => {
-                e.stopPropagation();
-                popoverRef?.show();
-              }
-            "
-          >
-            <stylospectrum-icon class="icon icon-arrow" name="navigation-down-arrow">
-            </stylospectrum-icon>
-          </div>
-
           <div style="width: 175px">
             <stylospectrum-list-item icon="delete" @click="handleDelete">
               Delete
@@ -72,6 +74,7 @@ const props = defineProps<ConversationItemProps>();
 const { title, date, lastMessage } = props;
 
 const hover = ref(false);
+const opener = ref<HTMLElement>();
 const popoverRef = ref<IPopover>();
 
 const handleMouseOver = () => {

@@ -63,7 +63,6 @@ const handleBlur = () => {
   box-sizing: border-box;
   border-radius: 1.125rem;
   position: relative;
-  background: #12171c;
   box-shadow: inset 0 0 0 0.0625rem rgba(169, 180, 190, 0.25);
   border: none;
   background: 0 100% / 100% 0.0625rem no-repeat linear-gradient(0deg, #a9b4be, #a9b4be) border-box;
@@ -79,16 +78,12 @@ const handleBlur = () => {
     border-radius: 1.125rem;
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     z-index: 2;
     pointer-events: none;
   }
 
   input {
-    -webkit-appearance: none;
     box-sizing: border-box;
     width: 100%;
     background: transparent;
@@ -111,7 +106,6 @@ const handleBlur = () => {
   }
 
   .clear-icon {
-    text-align: center;
     width: 1.75rem;
     height: 1.75rem;
     line-height: 1.75rem;
