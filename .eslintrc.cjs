@@ -19,12 +19,6 @@ module.exports = {
     '@vue/prettier',
     // 'prettier',
   ],
-  // extends: [
-  //   'eslint:recommended',
-  //   'plugin:vue/vue3-recommended',
-  //   '@vue/typescript/recommended',
-  //   '@vue/prettier',
-  // ],
   plugins: ['markdown', 'jest', '@typescript-eslint', 'import'],
   globals: {
     defineProps: 'readonly',

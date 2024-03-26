@@ -23,8 +23,8 @@
         </div>
 
         <div
-          ref="opener"
           v-if="hover || popoverRef?.opened"
+          ref="opener"
           style="width: 1rem; height: 1rem"
           @click="
             (e: MouseEvent) => {
@@ -38,11 +38,11 @@
         </div>
 
         <stylospectrum-popover
+          v-if="hover || popoverRef?.opened"
           ref="popoverRef"
           hide-footer
           horizontal-align="Right"
           offset-x="16"
-          v-if="hover || popoverRef?.opened"
         >
           <div style="width: 175px">
             <stylospectrum-list-item icon="delete" @click="handleDelete">

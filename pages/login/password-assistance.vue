@@ -1,12 +1,12 @@
 <template>
   <ClientOnly>
     <AuthWrapper title="Password assistance" @buttonSubmit="handleButtonSubmit">
-      <template v-slot:description>
+      <template #description>
         <div className="description">Enter the email address associated with your account.</div>
       </template>
 
-      <template v-slot:form>
-        <stylospectrum-form ref="formRef" v-if="renderComponent">
+      <template #form>
+        <stylospectrum-form v-if="renderComponent" ref="formRef">
           <stylospectrum-form-item
             style="margin-bottom: 0"
             label="Email"
@@ -38,8 +38,8 @@ import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
-import AuthWrapper from '../components/AuthWrapper.vue';
 import { AuthApi } from '~/api';
+import AuthWrapper from '~/components/AuthWrapper.vue';
 import { User } from '~/model';
 import { useUserStore } from '~/stores';
 
@@ -52,7 +52,7 @@ const axios = useAxios();
 const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
   if (values) {
     try {
       const response = await authApi.sendOTPToEmail({

@@ -16,9 +16,9 @@
         </div>
 
         <stylospectrum-button
+          class="box-button"
           @click="$emit('buttonSubmit')"
           @keydown="(e: KeyboardEvent) => $emit('buttonKeyDown', e)"
-          class="box-button"
         >
           {{ buttonText }}
         </stylospectrum-button>

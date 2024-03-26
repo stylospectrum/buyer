@@ -3,15 +3,11 @@
     <slot name="opener"></slot>
   </div>
 
-  <stylospectrum-popover hide-footer header-text="Chat" ref="popoverRef">
-    <stylospectrum-input
-      style="width: 100%"
-      placeholder="Search"
-      slot="sub-header"
-      allow-clear
-      show-search
-    >
-    </stylospectrum-input>
+  <stylospectrum-popover ref="popoverRef" hide-footer header-text="Chat">
+    <template #sub-header>
+      <stylospectrum-input style="width: 100%" placeholder="Search" allow-clear show-search>
+      </stylospectrum-input>
+    </template>
 
     <div class="list">
       <ConversationItem
@@ -19,7 +15,7 @@
         :key="idx"
         :title="item.title"
         :date="item.date"
-        :lastMessage="item.lastMessage"
+        :last-message="item.lastMessage"
         @click="handleClick"
         @delete="() => console.log('delete')"
       />

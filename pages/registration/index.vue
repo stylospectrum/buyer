@@ -2,13 +2,13 @@
   <ClientOnly>
     <AuthWrapper
       title="Create account"
-      introTitle="Be a buyer"
-      buttonText="Verify email"
+      intro-title="Be a buyer"
+      button-text="Verify email"
       :img="{ src: '/img/registration.png', width: '400px', height: '392.44px' }"
       @buttonSubmit="handleButtonSubmit"
     >
-      <template v-slot:form>
-        <stylospectrum-form ref="formRef" v-if="renderComponent">
+      <template #form>
+        <stylospectrum-form v-if="renderComponent" ref="formRef">
           <stylospectrum-form-item
             label="Name"
             name="name"
@@ -42,7 +42,7 @@
         </stylospectrum-form>
       </template>
 
-      <template v-slot:bottom>
+      <template #bottom>
         <div class="box-text">
           <span> Already have an account?</span>
           <stylospectrum-link @click="() => router.push('/login')">Sign in!</stylospectrum-link>
@@ -78,7 +78,7 @@ const authApi = new AuthApi(axios);
 const router = useRouter();
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
   if (values) {
     try {
       const response = await authApi.sendOTPToEmail({

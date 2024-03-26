@@ -1,15 +1,15 @@
 <template>
   <ClientOnly>
     <AuthWrapper title="Verification required" @buttonSubmit="handleButtonSubmit">
-      <template v-slot:description>
+      <template #description>
         <div className="description">
           To continue, complete this verification step. We have sent OTP to the email
           {{ userStore.email }}. Please enter it below.
         </div>
       </template>
 
-      <template v-slot:form>
-        <stylospectrum-form ref="formRef" v-if="renderComponent">
+      <template #form>
+        <stylospectrum-form v-if="renderComponent" ref="formRef">
           <stylospectrum-form-item
             style="margin-bottom: 0"
             label="Enter OTP"
@@ -25,7 +25,7 @@
         </stylospectrum-message-strip>
       </template>
 
-      <template v-slot:bottom>
+      <template #bottom>
         <stylospectrum-button type="Tertiary" class="button" @click="handleResend">
           Resend OTP
         </stylospectrum-button>
@@ -46,8 +46,8 @@ import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
-import AuthWrapper from '../components/AuthWrapper.vue';
 import { AuthApi } from '~/api';
+import AuthWrapper from '~/components/AuthWrapper.vue';
 import { useUserStore } from '~/stores';
 
 const formRef = ref<IForm>();
@@ -60,7 +60,7 @@ const axios = useAxios();
 const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
   if (values) {
     try {
       const response = await authApi.verifyOTP({

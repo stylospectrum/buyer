@@ -2,15 +2,15 @@
   <ClientOnly>
     <AuthWrapper
       title="Create new password"
-      buttonText="Save changes and Sign-In"
+      button-text="Save changes and Sign-In"
       @buttonSubmit="handleButtonSubmit"
     >
-      <template v-slot:description>
+      <template #description>
         <div className="description">We will ask for this password whenever you Sign-In.</div>
       </template>
 
-      <template v-slot:form>
-        <stylospectrum-form ref="formRef" v-if="renderComponent">
+      <template #form>
+        <stylospectrum-form v-if="renderComponent" ref="formRef">
           <stylospectrum-form-item
             style="margin-bottom: 0"
             label="New password"
@@ -50,7 +50,7 @@ const axios = useAxios();
 const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
 
   if (values) {
     try {

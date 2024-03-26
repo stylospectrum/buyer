@@ -2,19 +2,19 @@
   <ClientOnly>
     <AuthWrapper
       title="Create account"
-      introTitle="Be a buyer"
-      buttonText="Verify email"
+      intro-title="Be a buyer"
+      button-text="Verify email"
       :img="{ src: '/img/registration.png', width: '400px', height: '392.44px' }"
       @buttonSubmit="handleButtonSubmit"
     >
-      <template v-slot:description>
+      <template #description>
         <div className="description">
           To verify your email, we've sent a One Time Password (OTP) to {{ userStore.email }}
         </div>
       </template>
 
-      <template v-slot:form>
-        <stylospectrum-form ref="formRef" v-if="renderComponent">
+      <template #form>
+        <stylospectrum-form v-if="renderComponent" ref="formRef">
           <stylospectrum-form-item
             style="margin-bottom: 0"
             label="Enter OTP"
@@ -30,7 +30,7 @@
         </stylospectrum-message-strip>
       </template>
 
-      <template v-slot:bottom>
+      <template #bottom>
         <stylospectrum-button type="Tertiary" class="button" @click="handleResend">
           Resend OTP
         </stylospectrum-button>
@@ -51,8 +51,8 @@ import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
-import AuthWrapper from '../components/AuthWrapper.vue';
 import { AuthApi } from '~/api';
+import AuthWrapper from '~/components/AuthWrapper.vue';
 import { useUserStore } from '~/stores';
 
 const formRef = ref<IForm>();
@@ -66,7 +66,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
   if (values) {
     try {
       const response = await authApi.signUp({

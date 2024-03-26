@@ -20,5 +20,5 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@pinia/nuxt'],
+  modules: ['@pinia/nuxt', '@nuxtjs/stylelint-module'],
 });

@@ -1,14 +1,14 @@
 <template>
   <div class="wrap" :class="{ 'wrap-focused': focused }">
     <input
-      placeholder="Search for products, brands and shops"
       ref="inputNode"
+      placeholder="Search for products, brands and shops"
       @input="handleChange"
       @focus="handleFocus"
       @blur="handleBlur"
     />
 
-    <div class="clear-icon" v-if="value" @click="handleClear">
+    <div v-if="value" class="clear-icon" @click="handleClear">
       <stylospectrum-icon name="decline"></stylospectrum-icon>
     </div>
 

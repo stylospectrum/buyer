@@ -1,8 +1,8 @@
 <template>
   <ClientOnly>
     <AuthWrapper @buttonSubmit="handleButtonSubmit" @buttonKeyDown="handleButtonKeyDown">
-      <template v-slot:form>
-        <stylospectrum-form ref="formRef" v-if="renderComponent">
+      <template #form>
+        <stylospectrum-form v-if="renderComponent" ref="formRef">
           <stylospectrum-form-item
             label="Email"
             name="email"
@@ -14,7 +14,7 @@
               },
             ]"
           >
-            <stylospectrum-input @keydown="handleEmailKeyDown" class="box-form-input" allow-clear>
+            <stylospectrum-input class="box-form-input" allow-clear @keydown="handleEmailKeyDown">
             </stylospectrum-input>
           </stylospectrum-form-item>
 
@@ -23,15 +23,16 @@
             name="password"
             :rules="[{ required: true, message: 'Enter your password' }]"
           >
-            <stylospectrum-link
-              @keydown="handleForgotPassKeyDown"
-              ref="forgotPassRef"
-              slot="suffix-label"
-              @click="() => router.push('/login/password-assistance')"
-            >
-              Forgot your password?
-            </stylospectrum-link>
-            <stylospectrum-input class="box-form-input" type="Password" allow-clear ref="passRef">
+            <template #suffix-label>
+              <stylospectrum-link
+                ref="forgotPassRef"
+                @keydown="handleForgotPassKeyDown"
+                @click="() => router.push('/login/password-assistance')"
+              >
+                Forgot your password?
+              </stylospectrum-link>
+            </template>
+            <stylospectrum-input ref="passRef" class="box-form-input" type="Password" allow-clear>
             </stylospectrum-input>
           </stylospectrum-form-item>
 
@@ -42,7 +43,7 @@
         </stylospectrum-form>
       </template>
 
-      <template v-slot:bottom>
+      <template #bottom>
         <div class="box-text">
           <span> Do you not have an account?</span>
           <stylospectrum-link ref="createAnAccRef" @click="() => router.push('/registration')">
@@ -85,7 +86,7 @@ const axios = useAxios();
 const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
   if (values) {
     try {
       const response = await authApi.signIn({

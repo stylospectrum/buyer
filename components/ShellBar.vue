@@ -8,7 +8,7 @@
       <div class="spacer"></div>
 
       <ConversationList v-if="isAuth" @click="$emit('conversationListClick')">
-        <template v-slot:opener>
+        <template #opener>
           <ShellButton>
             <stylospectrum-icon name="discussion"></stylospectrum-icon>
           </ShellButton>
@@ -24,8 +24,8 @@
       </ShellButton>
 
       <stylospectrum-avatar
-        ref="accountBtnDomRef"
         v-if="isAuth"
+        ref="accountBtnDomRef"
         initials="FJ"
         interactive="true"
         style="width: 2rem; height: 2rem; margin-left: 0.5rem"
@@ -41,7 +41,7 @@
         <stylospectrum-icon name="account"></stylospectrum-icon>
       </ShellButton>
 
-      <stylospectrum-popover hide-footer v-if="isAuth" ref="popoverRef" horizontalAlign="Right">
+      <stylospectrum-popover v-if="isAuth" ref="popoverRef" hide-footer horizontal-align="Right">
         <div style="width: 198px">
           <stylospectrum-list-item icon="account"> My account </stylospectrum-list-item>
           <stylospectrum-list-item icon="log" @click="handleLogout">
@@ -50,7 +50,7 @@
         </div>
       </stylospectrum-popover>
 
-      <stylospectrum-popover hide-footer ref="popoverRef" horizontalAlign="Right" v-else>
+      <stylospectrum-popover v-else ref="popoverRef" hide-footer horizontal-align="Right">
         <div style="padding: 1rem">
           <stylospectrum-button style="width: 100%" @click="() => router.push('/login')">
             Sign in
