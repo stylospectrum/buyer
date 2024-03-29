@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="visible">
+  <div v-if="visible" class="container">
     <div class="header">
       <div class="header-inner">
         <div class="avatar">
@@ -13,7 +13,7 @@
     </div>
 
     <div class="content">
-      <div class="message-container" ref="msgContNode">
+      <div ref="msgContNode" class="message-container">
         <div
           v-for="(message, idx) in messages"
           :key="idx"
@@ -26,7 +26,8 @@
           }"
         >
           <div class="message-box">
-            <div class="message-content">
+            <stylospectrum-busy-indicator v-if="message.typing" size="Small" />
+            <div v-else class="message-content">
               {{ message.content }}
             </div>
           </div>
@@ -42,6 +43,7 @@
 <script setup lang="ts">
 import '@stylospectrum/ui/dist/avatar';
 import '@stylospectrum/ui/dist/button';
+import '@stylospectrum/ui/dist/busy-indicator';
 import '@stylospectrum/ui/dist/icon/data/decline';
 
 import { io, type Socket } from 'socket.io-client';
@@ -81,35 +83,52 @@ watch(visible, async () => {
 });
 
 const handleEnter = (message: string) => {
-  socket.value?.emit('chat', {
-    message,
-    conversationId: metadata.value.conversationId,
-    buyerId: userStore.id,
-    role: 'Buyer',
-  });
+  if (message) {
+    socket.value?.emit('chat', {
+      message,
+      conversationId: metadata.value.conversationId,
+      buyerId: userStore.id,
+      role: 'Buyer',
+    });
+  }
 };
 
 const handleOpen = (args: Metadata) => {
   if (visible.value) {
     return;
   }
-  const url = config.public.apiUrl.replace('http://', '');
   const tokens = storage.getToken();
 
   visible.value = true;
   metadata.value = args;
 
-  socket.value = io(`ws://${url}`, {
+  socket.value = io(config.public.apiUrl, {
     path: '/chat/socket.io',
-    extraHeaders: { Authorization: `Bearer ${tokens.accessToken}` },
+    extraHeaders: { Authorization: `Bearer ${tokens.accessToken}`, 'test-your-bot': '0' },
   });
   socket.value.connect();
 
   socket.value?.on('chat', (message) => {
-    messages.value.push(
+    const temp = messages.value.slice(0).filter((msg) => !msg.typing);
+    temp.push(
       new Message({
         content: message.content,
         senderId: message.senderId,
+        id: message.id,
+      }),
+    );
+    messages.value = temp;
+    nextTick(() => {
+      msgContNode.value!.scrollTop = msgContNode.value!.scrollHeight;
+    });
+  });
+
+  socket.value?.on('typing', (message) => {
+    messages.value.push(
+      new Message({
+        content: '',
+        senderId: message.senderId,
+        typing: true,
         id: message.id,
       }),
     );

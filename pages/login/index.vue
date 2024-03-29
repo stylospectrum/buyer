@@ -85,7 +85,7 @@ const axios = useAxios();
 const authApi = new AuthApi(axios);
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
   if (values) {
     try {
       const response = await authApi.signIn({
@@ -170,4 +170,3 @@ const handleButtonKeyDown = (e: KeyboardEvent) => {
   }
 }
 </style>
-~/api/auth

@@ -51,8 +51,8 @@ import '@stylospectrum/ui/dist/toast';
 
 import { type IForm, type IToast } from '@stylospectrum/ui/dist/types';
 
-import AuthWrapper from '../components/AuthWrapper.vue';
 import { AuthApi } from '~/api';
+import AuthWrapper from '~/components/AuthWrapper.vue';
 import { useUserStore } from '~/stores';
 
 const formRef = ref<IForm>();
@@ -66,7 +66,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 async function handleButtonSubmit() {
-  const values = await formRef.value!.validateFields();
+  const values = (await formRef.value!.validateFields()) as Record<string, string>;
   if (values) {
     try {
       const response = await authApi.signUp({
